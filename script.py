@@ -4,6 +4,7 @@ import pygame
 import chromedriver_binary
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import JavascriptException
 
 browser = webdriver.Chrome()
 browser.maximize_window()
@@ -11,7 +12,7 @@ browser.maximize_window()
 user_id='12345678' #会員番号
 pwd='********' #ネットパスワード
 
-date_id = "20000101_1" #日付_競馬場id 阪神→9 #名前変える必要あり
+date_id = "20000101_1" #日付_競馬場id 阪神→9
 
 def overlay_handle():
   if(browser.find_element_by_class_name('attention-agree-checkbox') > 0):
@@ -45,7 +46,12 @@ def choice_area():
 
 def kariosae():
   choice_area_button = choice_area() #選択可能な指定席エリアのボタンが返ってくる。
-  browser.execute_script('arguments[0].click();', choice_area_button)
+  try:
+    browser.execute_script('arguments[0].click();', choice_area_button)
+  except JavascriptException:
+    print("JavascriptException")
+    print("\007")
+    kariosae()
 
   kariosae_button = browser.find_element_by_id('submitAButton') #仮押さえするボタン
   browser.execute_script('arguments[0].click();', kariosae_button)
