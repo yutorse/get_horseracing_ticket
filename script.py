@@ -11,7 +11,6 @@ browser.maximize_window()
 
 user_id='12345678' #会員番号
 pwd='********' #ネットパスワード
-
 date_id = "20000101_1" #日付_競馬場id 阪神→9
 
 def overlay_handle():
@@ -30,39 +29,44 @@ def sound_notice():
   return 0
 
 def choice_area():
-  pulldown_omakase = browser.find_element_by_id('p03A_auto_open') #これは日付, 競馬場が変わっても不変そう
-  browser.execute_script('arguments[0].click();', pulldown_omakase)
+  while True:
+    pulldown_omakase = browser.find_element_by_id('p03A_auto_open')
+    browser.execute_script('arguments[0].click();', pulldown_omakase)
+    reservable_area_list = browser.find_elements_by_class_name('ticket_auto_link')
 
-  reservable_area_list = browser.find_elements_by_class_name('ticket_auto_link')
-  if(len(reservable_area_list)>0):
-    random_num = random.randint(0, len(reservable_area_list)-1)
-    choice_area_button = reservable_area_list[random_num] #アルゴリズム改善の余地
-    return choice_area_button
-  else: #選択可能な指定席のエリアが見つかるまで更新を繰り返す。
-    browser.refresh()
-    print("area is not found")
-    time.sleep(2) #インターバル
-    choice_area()
+    if(len(reservable_area_list) > 0):
+      break
+    else:
+      print("area is not found")
+      browser.refresh()
+      time.sleep(2) #インターバル
+
+  random_num = random.randint(0, len(reservable_area_list)-1)
+  choice_area_button = reservable_area_list[random_num] #アルゴリズム改善の余地
+  return choice_area_button
 
 def kariosae():
-  choice_area_button = choice_area() #選択可能な指定席エリアのボタンが返ってくる。
-  try:
-    browser.execute_script('arguments[0].click();', choice_area_button)
-  except JavascriptException:
-    print("JavascriptException")
-    print("\007")
-    kariosae()
+  while True:
+    choice_area_button = choice_area()
 
-  kariosae_button = browser.find_element_by_id('submitAButton') #仮押さえするボタン
-  browser.execute_script('arguments[0].click();', kariosae_button)
+    try:
+      browser.execute_script('arguments[0].click();', choice_area_button)
+    except JavascriptException:
+      print("JavascriptException")
+      print("\007")
+      kariosae()
 
-  cancel_button = browser.find_elements_by_class_name('kariosae_cancel')
-  if(len(cancel_button) > 0): #仮押さえキャンセルボタンがある = 仮押さえができている
-    sound_notice()
-  else:
-    print("kariosae_failed")
-    time.sleep(2) #インターバル
-    kariosae()
+    kariosae_button = browser.find_element_by_id('submitAButton') #仮押さえするボタン
+    browser.execute_script('arguments[0].click();', kariosae_button)
+    cancel_button = browser.find_elements_by_class_name('kariosae_cancel')
+
+    if(len(cancel_button) > 0): #仮押さえキャンセルボタンがある = 仮押さえができている
+      break
+    else:
+      print("kariosae_failed")
+      time.sleep(2) #インターバル
+
+  sound_notice()
 
 def main():
   browser.get('https://jra.flpjp.com/')
