@@ -1,17 +1,22 @@
 import time
 import random
 import pygame
-import chromedriver_binary
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import JavascriptException
 
-browser = webdriver.Chrome()
+browser = webdriver.Chrome(ChromeDriverManager().install())
 browser.maximize_window()
 
+'''
 user_id='12345678' #会員番号
 pwd='********' #ネットパスワード
 date_id = "20000101_1" #日付_競馬場id 阪神→9
+'''
+user_id='12345678' #会員番号
+pwd='********' #ネットパスワード
+date_id = "20000101_1" #日付_競馬場id 阪神→9 中京→7
 
 def overlay_handle():
   if(browser.find_element_by_class_name('attention-agree-checkbox') > 0):
@@ -73,7 +78,7 @@ def main():
 
   browser.find_element_by_id('userid').send_keys(user_id)
   browser.find_element_by_id('passwd').send_keys(pwd)
-  browser.find_element_by_class_name('space-btm10').click()
+  browser.find_element_by_id('btn_login_submit').click()
 
   browser.get(f'https://jra.flpjp.com/seatSelect/{date_id}')
 
