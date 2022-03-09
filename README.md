@@ -13,12 +13,16 @@
 - selenium 4.0.0
 - pygame 2.1.0
 
-## 使用方法
+## 使用方法(2022年3月現在、2-2不要)
 ### 1. python3のインストール
    1. `python3 --version`でバージョンの確認
    2. インストールされていたらOK. されていないならインストール.
-### 2. chromedriver-binaryのインストール (https://taku-info.com/python-chromedriver-only-supports-chrome-vestion/)
+### 2-1. webdriver_managerのインストール (https://yuki.world/python-selenium-chromedriver-auto-update/)
+   1. `pip install webdriver-manager`でインストール
+---
+### 2-2. chromedriver-binaryのインストール (https://taku-info.com/python-chromedriver-only-supports-chrome-vestion/)
    1. `pip install chromedriver-binary==<chromeのバージョン>`でchromeのドライバーをインストール
+---
 ### 3. seleniumのインストール
    1. `pip install selenium`でseleniumのインストール
 ### 4. pygameのインストール
